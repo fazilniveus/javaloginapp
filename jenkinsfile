@@ -1,0 +1,34 @@
+pipeline{
+    agent any
+    tools {
+		maven 'Maven'
+	}
+    stages{
+       stage('GetCode'){
+            steps{
+                checkout scm
+            }
+         }        
+       stage('Build'){
+            steps{
+                sh 'mvn clean'
+                
+            }
+         }
+        stage('SonarQube analysis') {
+//    def scannerHome = tool 'SonarScanner 4.0';
+        steps{
+        withSonarQubeEnv('sonarqube-6.7.1') { 
+        // If you have configured more than one global server connection, you can specify its name
+//      sh "${scannerHome}/bin/sonar-scanner"
+        sh "mvn test -Dtest=TestControllerTests  -DfailIfNoTests=false"
+	//sh "mvn verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin"
+//	sh '-Dsonar.login=“admin” -Dsonar.password=“admin”'
+        sh "mvn clean install sonar:sonar -DfailIfNoTests=false "
+        //sh "mvn sonar:sonar "
+    }
+        }
+        }
+       
+    }
+}
