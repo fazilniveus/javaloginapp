@@ -3,6 +3,11 @@ pipeline{
     tools {
 		maven 'Maven'
 	}
+	
+    environment {
+        PATH = "$PATH:/opt/apache-maven-3.8.6/bin"
+    }
+    
     stages{
        stage('GetCode'){
             steps{
